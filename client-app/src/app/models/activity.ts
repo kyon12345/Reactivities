@@ -5,5 +5,5 @@ export interface IAcitvity{
     category: string,
     date: Date,
     city: string,
-    venus:string
+    venue:string
 }
