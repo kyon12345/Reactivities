@@ -1,19 +1,19 @@
-import React from "react";
-import { Grid, GridColumn } from "semantic-ui-react";
-import { IAcitvity } from "../../../app/models/activity";
-import ActivityList from "./ActivityList";
-import ActivityDetails from "../details/ActivityDetails";
-import ActivityForms from "../form/ActivityForms";
+import React from 'react';
+import { Grid } from 'semantic-ui-react';
+import { IActivity } from '../../../app/models/activity';
+import ActivityList from './ActivityList';
+import ActivityDetails from '../details/ActivityDetails';
+import ActivityForm from '../form/ActivityForm';
 
 interface IProps {
-  activities: IAcitvity[];
+  activities: IActivity[];
   selectActivity: (id: string) => void;
-  selectedActivity: IAcitvity | null;
+  selectedActivity: IActivity | null;
   editMode: boolean;
   setEditMode: (editMode: boolean) => void;
-  setSelectedActivity: (activity: IAcitvity | null) => void;
-  createActivity: (activity: IAcitvity) => void;
-  editActivity: (activity: IAcitvity) => void;
+  setSelectedActivity: (activity: IActivity | null) => void;
+  createActivity: (activity: IActivity) => void;
+  editActivity: (activity: IActivity) => void;
   deleteActivity: (id: string) => void;
 }
 
@@ -32,12 +32,12 @@ const ActivityDashboard: React.FC<IProps> = ({
     <Grid>
       <Grid.Column width={10}>
         <ActivityList
-          deleteActivity={deleteActivity}
           activities={activities}
           selectActivity={selectActivity}
+          deleteActivity={deleteActivity}
         />
       </Grid.Column>
-      <GridColumn width={6}>
+      <Grid.Column width={6}>
         {selectedActivity && !editMode && (
           <ActivityDetails
             activity={selectedActivity}
@@ -46,14 +46,15 @@ const ActivityDashboard: React.FC<IProps> = ({
           />
         )}
         {editMode && (
-          <ActivityForms
-            activity={selectedActivity!}
+          <ActivityForm
+            key={(selectedActivity && selectedActivity.id) || 0}
             setEditMode={setEditMode}
+            activity={selectedActivity!}
             createActivity={createActivity}
             editActivity={editActivity}
           />
         )}
-      </GridColumn>
+      </Grid.Column>
     </Grid>
   );
 };
