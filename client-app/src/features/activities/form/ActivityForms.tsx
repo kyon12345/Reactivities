@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
 import { IAcitvity } from "../../../app/models/activity";
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from "uuid";
 
 interface IProps {
   setEditMode: (editMode: boolean) => void;
@@ -41,11 +41,10 @@ const ActivityForms: React.FC<IProps> = ({
         id: uuid()
       };
       createActivity(newActivity);
-    }
-    else {
+    } else {
       editActivity(activity);
     }
-}
+  };
 
   const handleInputChange = (
     event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -57,7 +56,7 @@ const ActivityForms: React.FC<IProps> = ({
   return (
     <Segment clearing>
       <Form onSubmit={handleSubmit}>
-        <Form.Input 
+        <Form.Input
           onChange={handleInputChange}
           name="title"
           placeholder="Title"
@@ -79,7 +78,7 @@ const ActivityForms: React.FC<IProps> = ({
         <Form.Input
           onChange={handleInputChange}
           name="date"
-          type="date"
+          type="datetime-local"
           placeholder="Date"
           value={activity.date}
         />
@@ -95,7 +94,7 @@ const ActivityForms: React.FC<IProps> = ({
           placeholder="Venue"
           value={activity.venue}
         />
-        <Button  floated="right" positive type="submit" content="Submit" />
+        <Button floated="right" positive type="submit" content="Submit" />
         <Button
           onClick={() => {
             setEditMode(false);
