@@ -39,7 +39,7 @@ namespace Application.Activities
                 activity.Category = request.Category ?? activity.Category;            
                 activity.Date = request.Date ?? activity.Date;            
                 activity.City = request.City ?? activity.City;            
-                activity.Venue = request.Venue ?? activity.Venue;            
+                activity.Venue = request.Venue ?? activity.Venue;
 
                 var success = await _context.SaveChangesAsync() > 0;
 
