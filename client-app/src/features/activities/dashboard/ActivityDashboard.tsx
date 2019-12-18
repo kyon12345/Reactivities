@@ -25,31 +25,23 @@ const ActivityDashboard: React.FC<IProps> = ({
   target
 }) => {
   const activityStore = useContext(ActivityStore);
-  const { editMode,selectedActivity }=activityStore;
+  const { editMode, selectedActivity } = activityStore;
   return (
     <Grid>
       <Grid.Column width={10}>
         <ActivityList
           deleteActivity={deleteActivity}
-          submitting={submitting}
           target={target}
         />
       </Grid.Column>
       <Grid.Column width={6}>
         {selectedActivity && !editMode && (
-          <ActivityDetails
-            activity={selectedActivity}
-            setEditMode={setEditMode}
-            setSelectedActivity={setSelectedActivity}
-          />
+          <ActivityDetails />
         )}
         {editMode && (
           <ActivityForm
             key={(selectedActivity && selectedActivity.id) || 0}
-            setEditMode={setEditMode}
             activity={selectedActivity!}
-            editActivity={editActivity}
-            submitting={submitting}
           />
         )}
       </Grid.Column>

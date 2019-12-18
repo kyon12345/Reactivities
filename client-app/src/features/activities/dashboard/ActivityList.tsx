@@ -4,18 +4,16 @@ import { observer } from 'mobx-react-lite';
 import  ActivityStore from "../../../app/stores/activityStore";
 
 interface IProps {
-  submitting: boolean;
   target: string;
   deleteActivity:(event:SyntheticEvent<HTMLButtonElement>,id:string)=>void
 }
 
 const ActivityList: React.FC<IProps> = ({
   deleteActivity,
-  submitting,
   target
 }) => {
   const activityStore = useContext(ActivityStore);
-  const { activityByDate, selectActivity } = activityStore;
+  const { activityByDate, selectActivity,submitting } = activityStore;
   return (
     <Segment clearing>
       <Item.Group divided>
