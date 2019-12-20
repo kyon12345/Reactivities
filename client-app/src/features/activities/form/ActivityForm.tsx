@@ -10,7 +10,7 @@ interface DetailParams {
   id: string
 }
 
-const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) => {
+const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, history }) => {
   const activityStore = useContext(ActivityStore)
   const { createActivity, editActivity, submitting, cancelFormOpen, activity: initialFormState, loadActivity, clearActivity } = activityStore
 
@@ -25,7 +25,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) =>
   });
 
   useEffect(() => {
-    if (match.params.id) {
+    if (match.params.id && activity.id.length === 0) {
       loadActivity(match.params.id).then(
         () => initialFormState && setActivity(initialFormState)
       )
@@ -33,7 +33,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) =>
     return () => {
       clearActivity()
     }
-  }, [match.params.id, loadActivity, clearActivity, initialFormState])
+  }, [match.params.id, loadActivity, clearActivity, initialFormState, activity.id.length])
 
   const handleSubmit = () => {
     if (activity.id.length === 0) {
@@ -41,9 +41,9 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) =>
         ...activity,
         id: uuid()
       };
-      createActivity(newActivity);
+      createActivity(newActivity).then(() => { history.push(`/activities/${activity.id}`) });
     } else {
-      editActivity(activity);
+      editActivity(activity).then(() => { history.push(`/activities/${activity.id}`) });
     }
   };
 
