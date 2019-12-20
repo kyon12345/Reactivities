@@ -7,7 +7,6 @@ import { NavLink } from 'react-router-dom';
 
 const NavBar: React.FC = () => {
   const activityStore = useContext(ActivityStore)
-  const { openCreateForm } = activityStore
   return (
     <Menu fixed='top' inverted>
       <Container>

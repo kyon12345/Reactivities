@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  Fragment,
-  useContext
-} from "react";
+import React, { useEffect, Fragment, useContext } from "react";
 import { Container } from "semantic-ui-react";
 import NavBar from "../../features/nav/NavBar";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
@@ -28,10 +24,10 @@ const App = () => {
     <Fragment>
       <NavBar />
       <Container style={{ marginTop: "7em" }}>
-        <Route exact path='/' component={HomePage} />
-        <Route path='/activities' component={ActivityDashboard} />
-        <Route path='/CreateActivity' component={ActivityForm} />
-        <Route path='/activities/:id' component={ActivityDetails} />
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/activities" component={ActivityDashboard} />
+        <Route path="/createActivity" component={ActivityForm} />
+        <Route path="/activities/:id" component={ActivityDetails} />
       </Container>
     </Fragment>
   );
