@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
 using Microsoft.Extensions.Hosting;
-
+using FluentValidation.AspNetCore;
 
 namespace API
 {
@@ -35,7 +35,12 @@ namespace API
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
-            services.AddControllers();
+            services.AddControllers()
+            .AddFluentValidation(cfg =>
+            {
+                cfg.RegisterValidatorsFromAssemblyContaining<Create>();
+                cfg.RegisterValidatorsFromAssemblyContaining<Edit>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
