@@ -60,14 +60,16 @@ class ActivityStore {
     let activity = this.getActivity(id);
     if (activity) {
       this.activity = activity;
+      return activity;
     } else {
       try {
         activity = await agent.Activities.details(id);
         runInAction("getting activity", () => {
-          activity.date=new Date(activity.date)
+          activity.date = new Date(activity.date);
           this.activity = activity;
           this.loadingInitial = false;
         });
+        return activity;
       } catch (error) {
         console.log(error);
         runInAction("getting activity error", () => {
