@@ -23,6 +23,7 @@
     "react-toastify": "^5.5.0",
     "react-widgets": "^4.4.11",
     "react-widgets-date-fns": "^4.0.26",
+    "revalidate": "^1.2.0",
     "semantic-ui-react": "^0.87.3",
     "typescript": "3.5.3",
     "uuid": "^3.3.2"
@@ -47,5 +48,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/revalidate": "^1.1.2"
   }
 }

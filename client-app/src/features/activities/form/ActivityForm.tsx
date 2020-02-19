@@ -1,6 +1,7 @@
-import React, { useState, FormEvent, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { v4 as uuid } from 'uuid';
 import { Segment, Form, Button, Grid } from "semantic-ui-react";
-import { IActivityFormValues, ActivityFormValues } from "../../../app/models/activity";
+import { ActivityFormValues } from "../../../app/models/activity";
 import ActivityStore from "../../../app/stores/activityStore";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
@@ -11,7 +12,22 @@ import SelectInput from "../../../app/common/form/SelectInput";
 import { category } from "../../../app/common/options/categoryOptions";
 import DateInput from "../../../app/common/form/DateInput";
 import { combineDateAndTime } from "../../../app/common/util/util";
-import { tr } from "date-fns/locale";
+import { combineValidators, isRequired, hasLengthGreaterThan, composeValidators } from 'revalidate'
+
+const validate = combineValidators({
+  title: isRequired({ message: 'The event title is required' }),
+  category: isRequired('Category'),
+  description: composeValidators(
+    isRequired('Description'),
+    hasLengthGreaterThan(4)({
+      message: 'Description needs to be at least 5 characters'
+    })
+  )(),
+  city: isRequired('City'),
+  venue: isRequired('Venue'),
+  date: isRequired('Date'),
+  time: isRequired('Time')
+});
 
 interface DetailParams {
   id: string;
@@ -24,8 +40,9 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   const activityStore = useContext(ActivityStore);
   const {
     submitting,
-    activity: initialFormState,
     loadActivity,
+    createActivity,
+    editActivity,
   } = activityStore;
 
   const [activity, setActivity] = useState(new ActivityFormValues());
@@ -43,27 +60,19 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
     loadActivity,
   ]);
 
-  // const handleSubmit = () => {
-  //   if (activity.id.length === 0) {
-  //     let newActivity = {
-  //       ...activity,
-  //       id: uuid()
-  //     };
-  //     createActivity(newActivity).then(() => {
-  //       history.push(`/activities/${activity.id}`);
-  //     });
-  //   } else {
-  //     editActivity(activity).then(() => {
-  //       history.push(`/activities/${activity.id}`);
-  //     });
-  //   }
-  // };
-
   const handleFinalFormSubmit = (values: any) => {
     const dateAndTime = combineDateAndTime(values.date, values.time);
     const { date, time, ...activity } = values;
-    activity.date=dateAndTime
-    console.log(activity);
+    activity.date = dateAndTime;
+    if (!activity.id) {
+      let newActivity = {
+        ...activity,
+        id: uuid()
+      };
+      createActivity(newActivity)
+    } else {
+      editActivity(activity)
+    }
   };
 
   return (
@@ -71,9 +80,10 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
       <Grid.Column width={10}>
         <Segment clearing>
           <FinalForm
+            validate={validate}
             initialValues={activity}
             onSubmit={handleFinalFormSubmit}
-            render={({ handleSubmit }) => (
+            render={({ handleSubmit,invalid,pristine }) => (
               <Form onSubmit={handleSubmit} loading={loading}>
                 <Field
                   name="title"
@@ -127,13 +137,13 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
                 <Button
                   loading={submitting}
                   floated="right"
-                  disabled={loading}
+                  disabled={loading || invalid || pristine}
                   positive
                   type="submit"
                   content="Submit"
                 />
                 <Button
-                  onClick={() => history.push("/activities")}
+                  onClick={activity.id ? () => history.push(`/activities/${activity.id}`):() => history.push("/activities")}
                   disabled={loading}
                   floated="right"
                   type="button"
