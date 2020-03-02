@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Persistence;
 using FluentValidation.AspNetCore;
 using API.Middleware;
+using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace API
 {
@@ -41,6 +43,9 @@ namespace API
                 cfg.RegisterValidatorsFromAssemblyContaining<Create>();
                 cfg.RegisterValidatorsFromAssemblyContaining<Edit>();
             });
+            var builder= services.AddIdentityCore<AppUser>();
+            builder.AddEntityFrameworkStores<DataContext>();
+            builder.AddSignInManager<SignInManager<AppUser>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
