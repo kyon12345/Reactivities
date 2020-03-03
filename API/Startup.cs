@@ -15,6 +15,8 @@ using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace API
 {
@@ -42,17 +44,26 @@ namespace API
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
-            services.AddControllers()
+            services.AddControllers(opt=>
+            {
+                var policy = new AuthorizationPolicyBuilder().
+                RequireAuthenticatedUser().Build();
+                opt.Filters.Add(new AuthorizeFilter(policy));
+            })
             .AddFluentValidation(cfg =>
             {
                 cfg.RegisterValidatorsFromAssemblyContaining<Create>();
                 cfg.RegisterValidatorsFromAssemblyContaining<Edit>();
             });
+            
             var builder = services.AddIdentityCore<AppUser>();
             builder.AddEntityFrameworkStores<DataContext>();
             builder.AddSignInManager<SignInManager<AppUser>>();
+
             services.AddScoped<IJwtGenerator, JwtGenerator>();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key"));
+            services.AddScoped<IUserAccessor, UserAccessor>();
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer
             (
                 opt =>
