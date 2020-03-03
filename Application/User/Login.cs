@@ -2,6 +2,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -30,19 +31,24 @@ namespace Application.User
         public class Handler : IRequestHandler<Query, User>
         {
             private readonly DataContext _context;
-            public UserManager<AppUser> _userManager { get; }
-            public SignInManager<AppUser> _signInManager { get; }
-            public Handler(DataContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+            private readonly UserManager<AppUser> _userManager;
+            private readonly SignInManager<AppUser> _signInManager;
+            private readonly IJwtGenerator _jwtGenerator;
+
+            public Handler(DataContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
+            IJwtGenerator jwtGenerator)
             {
-                this._signInManager = signInManager;
-                this._userManager = userManager;
+                _signInManager = signInManager;
+                _jwtGenerator = jwtGenerator;
+                _userManager = userManager;
                 _context = context;
             }
 
             public async Task<User> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.FindByEmailAsync(request.Email);
-                if(user==null){
+                if(user==null)
+                {
                     throw new RestException(HttpStatusCode.Unauthorized);
                 }
 
@@ -53,7 +59,7 @@ namespace Application.User
                     return new User
                     {
                         DisplayName = user.DisplayName,
-                        Token = "this is a token",
+                        Token = _jwtGenerator.CreateToken(user),
                         Username = user.UserName,
                         Image = null
                     };

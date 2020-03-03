@@ -10,6 +10,11 @@ using FluentValidation.AspNetCore;
 using API.Middleware;
 using Domain;
 using Microsoft.AspNetCore.Identity;
+using Application.Interfaces;
+using Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace API
 {
@@ -43,9 +48,24 @@ namespace API
                 cfg.RegisterValidatorsFromAssemblyContaining<Create>();
                 cfg.RegisterValidatorsFromAssemblyContaining<Edit>();
             });
-            var builder= services.AddIdentityCore<AppUser>();
+            var builder = services.AddIdentityCore<AppUser>();
             builder.AddEntityFrameworkStores<DataContext>();
             builder.AddSignInManager<SignInManager<AppUser>>();
+            services.AddScoped<IJwtGenerator, JwtGenerator>();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key"));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer
+            (
+                opt =>
+                {
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key,
+                        ValidateAudience = false,
+                        ValidateIssuer = false
+                    };
+                }
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +86,7 @@ namespace API
             app.UseRouting();
             app.UseCors("CorsPolicy");
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
