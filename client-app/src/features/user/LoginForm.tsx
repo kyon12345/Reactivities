@@ -6,7 +6,7 @@ import { FORM_ERROR } from "final-form";
 import { combineValidators, isRequired } from "revalidate";
 import { Form, Button, Header, Label } from "semantic-ui-react";
 import TextInput from "../../app/common/form/TextInput";
-
+import ErrorMessage from "../../app/common/form/ErrorMessage";
 const validate = combineValidators({
     email: isRequired("Email"),
     password: isRequired("Password")
@@ -49,10 +49,9 @@ const LoginForm = () => {
                         placeholder="Password"
                     />
                     {submitError && !dirtySinceLastSubmit && (
-                        <Label
-                            color="red"
-                            basic
-                            content={submitError.statusText}
+                        <ErrorMessage
+                            error={submitError}
+                            text="Invalid Email or Password"
                         />
                     )}
                     <Button
@@ -64,7 +63,6 @@ const LoginForm = () => {
                         content="Login"
                         fluid
                     />
-                    <pre>{JSON.stringify(form.getState(), null, 2)}</pre>
                 </Form>
             )}
         />
