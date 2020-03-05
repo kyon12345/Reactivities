@@ -30,6 +30,7 @@ const HomePage = () => {
                             as={Link}
                             to="/activities"
                             size="huge"
+                            content="Go to activities!"
                             inverted
                         />
                     </Fragment>
