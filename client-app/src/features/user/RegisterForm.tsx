@@ -74,7 +74,7 @@ const RegisterForm = () => {
                         content="Register"
                         fluid
                     />
-                </Form>
+            </Form>
             )}
         />
     );
