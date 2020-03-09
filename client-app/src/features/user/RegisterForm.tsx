@@ -1,25 +1,29 @@
 import React, { useContext } from "react";
 import { Form as FinalForm, Field } from "react-final-form";
-import { IUserFormValues } from "../../app/models/user";
+import { Form, Button, Header } from "semantic-ui-react";
+import TextInput from "../../app/common/form/TextInput";
 import { RootStoreContext } from "../../app/stores/rootStore";
+import { IUserFormValues } from "../../app/models/user";
 import { FORM_ERROR } from "final-form";
 import { combineValidators, isRequired } from "revalidate";
-import { Form, Button, Header, Label } from "semantic-ui-react";
-import TextInput from "../../app/common/form/TextInput";
 import ErrorMessage from "../../app/common/form/ErrorMessage";
 
 const validate = combineValidators({
+    username: isRequired("Username"),
+    displayName: isRequired("DisplayName"),
     email: isRequired("Email"),
     password: isRequired("Password")
 });
 
-const LoginForm = () => {
+const RegisterForm = () => {
     const rootStore = useContext(RootStoreContext);
-    const { login } = rootStore.userStore;
+    const { register } = rootStore.userStore;
     return (
         <FinalForm
             onSubmit={(values: IUserFormValues) =>
-                login(values).catch(error => ({ [FORM_ERROR]: error }))
+                register(values).catch(error => ({
+                    [FORM_ERROR]: error
+                }))
             }
             validate={validate}
             render={({
@@ -28,14 +32,24 @@ const LoginForm = () => {
                 submitError,
                 invalid,
                 pristine,
-                dirtySinceLastSubmit,
+                dirtySinceLastSubmit
             }) => (
                 <Form onSubmit={handleSubmit} error>
                     <Header
                         as="h2"
-                        content="Login to Reactivities"
+                        content="Sign up to Reactivities"
                         color="teal"
                         textAlign="center"
+                    />
+                    <Field
+                        name="username"
+                        component={TextInput}
+                        placeholder="Username"
+                    />
+                    <Field
+                        name="displayName"
+                        component={TextInput}
+                        placeholder="Display Name"
                     />
                     <Field
                         name="email"
@@ -44,15 +58,12 @@ const LoginForm = () => {
                     />
                     <Field
                         name="password"
-                        type="password"
                         component={TextInput}
                         placeholder="Password"
+                        type="password"
                     />
                     {submitError && !dirtySinceLastSubmit && (
-                        <ErrorMessage
-                            error={submitError}
-                            text="Invalid Email or Password"
-                        />
+                        <ErrorMessage error={submitError} />
                     )}
                     <Button
                         disabled={
@@ -60,7 +71,7 @@ const LoginForm = () => {
                         }
                         loading={submitting}
                         color="teal"
-                        content="Login"
+                        content="Register"
                         fluid
                     />
                 </Form>
@@ -69,4 +80,4 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default RegisterForm;
