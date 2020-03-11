@@ -3,7 +3,7 @@ import { Segment, Image, Item, Header, Button } from "semantic-ui-react";
 import { IActivity } from "../../../app/models/activity";
 import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
-import { format, addISOWeekYears } from "date-fns";
+import { format } from "date-fns";
 import { RootStoreContext } from "../../../app/stores/rootStore";
 
 const activityImageStyle = {
@@ -23,7 +23,7 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
     activity
 }) => {
     const rootStore = useContext(RootStoreContext);
-    const { attendActivity, cancelAttendance } = rootStore.activityStore;
+    const { attendActivity, cancelAttendance,loading } = rootStore.activityStore;
     return (
         <Segment.Group>
             <Segment basic attached="top" style={{ padding: "0" }}>
@@ -61,11 +61,11 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
                         Manage Event
                     </Button>
                 ) : activity.isGoing ? (
-                    <Button onClick={cancelAttendance}>
+                    <Button loading={loading} onClick={cancelAttendance}>
                         Cancel attendance
                     </Button>
                 ) : (
-                    <Button color="teal" onClick={attendActivity}>
+                    <Button loading={loading} color="teal" onClick={attendActivity}>
                         Join Activity
                     </Button>
                 )}

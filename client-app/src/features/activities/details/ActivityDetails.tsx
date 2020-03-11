@@ -8,7 +8,6 @@ import ActivityDetailedInfo from "./ActivityDetailedInfo";
 import ActivityDetailedChat from "./ActivityDetailedChat";
 import ActivityDetailedSidebar from "./ActivityDetailedSidebar";
 import { RootStoreContext } from "../../../app/stores/rootStore";
-import { IAttendee } from "../../../app/models/activity";
 
 interface DetailParams {
   id: string;
