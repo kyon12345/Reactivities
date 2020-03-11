@@ -1,21 +1,56 @@
-import React from 'react'
-import { Item, Button, SegmentGroup, Segment, Icon } from 'semantic-ui-react';
-import { IActivity } from '../../../app/models/activity';
-import { Link } from 'react-router-dom';
-import {format} from 'date-fns'
-import ActivityListItemAttendees from './ActivityListItemAttendees';
+import React from "react";
+import {
+    Item,
+    Button,
+    SegmentGroup,
+    Segment,
+    Icon,
+    Label
+} from "semantic-ui-react";
+import { IActivity } from "../../../app/models/activity";
+import { Link } from "react-router-dom";
+import { format } from "date-fns";
+import ActivityListItemAttendees from "./ActivityListItemAttendees";
 
 const ActivityListItem: React.FC<{ activity: IActivity }> = ({ activity }) => {
-    const host=activity.attendees.filter(x=>x.isHost)[0]
+    const host = activity.attendees.filter(x => x.isHost)[0];
     return (
         <SegmentGroup>
             <Segment>
                 <Item.Group>
                     <Item>
-                        <Item.Image src="/assets/user.png" size="tiny" />
+                        <Item.Image
+                            src={host.image || "/assets/user.png"}
+                            size="tiny"
+                        />
                         <Item.Content>
-                            <Item.Header as="a">{activity.title}</Item.Header>
-                            <Item.Description>Hosted by {host.displayName}</Item.Description>
+                            <Item.Header
+                                as={Link}
+                                to={`/activities/${activity.id}`}
+                            >
+                                {activity.title}
+                            </Item.Header>
+                            <Item.Description>
+                                Hosted by {host.displayName}
+                            </Item.Description>
+                            {activity.isHost && (
+                                <Item.Description>
+                                    <Label
+                                        basic
+                                        color="orange"
+                                        content="you are hosting this activity"
+                                    />
+                                </Item.Description>
+                            )}
+                            {activity.isGoing && (
+                                <Item.Description>
+                                    <Label
+                                        basic
+                                        color="green"
+                                        content="you are going this activity"
+                                    />
+                                </Item.Description>
+                            )}
                         </Item.Content>
                     </Item>
                 </Item.Group>
@@ -41,6 +76,6 @@ const ActivityListItem: React.FC<{ activity: IActivity }> = ({ activity }) => {
             </Segment>
         </SegmentGroup>
     );
-}
+};
 
-export default ActivityListItem
+export default ActivityListItem;

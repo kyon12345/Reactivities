@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Segment, List, Item, Label, Image } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { IAttendee } from "../../../app/models/activity";
+import { observer } from "mobx-react-lite";
 
 interface IProps {
     attendees: IAttendee[];
@@ -26,7 +27,7 @@ const ActivityDetailedSidebar: React.FC<IProps> = ({ attendees }) => {
                 <List relaxed divided>
                     {attendees.map(attendee => (
                         <Item
-                            key={attendee.userName}
+                            key={attendee.username}
                             style={{ position: "relative" }}
                         >
                             {attendee.isHost && (
@@ -45,7 +46,7 @@ const ActivityDetailedSidebar: React.FC<IProps> = ({ attendees }) => {
                             />
                             <Item.Content verticalAlign="middle">
                                 <Item.Header as="h3">
-                                    <Link to={`profile/${attendee.userName}`}>
+                                    <Link to={`profile/${attendee.username}`}>
                                         {attendee.displayName}
                                     </Link>
                                 </Item.Header>
@@ -61,4 +62,4 @@ const ActivityDetailedSidebar: React.FC<IProps> = ({ attendees }) => {
     );
 };
 
-export default ActivityDetailedSidebar;
+export default observer(ActivityDetailedSidebar);
