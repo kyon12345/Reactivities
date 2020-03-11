@@ -8,6 +8,7 @@ import ActivityDetailedInfo from "./ActivityDetailedInfo";
 import ActivityDetailedChat from "./ActivityDetailedChat";
 import ActivityDetailedSidebar from "./ActivityDetailedSidebar";
 import { RootStoreContext } from "../../../app/stores/rootStore";
+import { IAttendee } from "../../../app/models/activity";
 
 interface DetailParams {
   id: string;
@@ -15,7 +16,7 @@ interface DetailParams {
 
 const ActivityDetails: React.FC<RouteComponentProps<DetailParams>> = ({
   match,
-  history
+  history,
 }) => {
   const rootStore = useContext(RootStoreContext);
   const { activity, loadActivity, loadingInitial } = rootStore.activityStore;
@@ -37,7 +38,7 @@ const ActivityDetails: React.FC<RouteComponentProps<DetailParams>> = ({
         <ActivityDetailedChat />
       </GridColumn>
       <GridColumn width={6}>
-        <ActivityDetailedSidebar />
+        <ActivityDetailedSidebar attendees={activity.attendees} />
       </GridColumn>
     </Grid>
   );
