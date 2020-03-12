@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Proxies;
 using Persistence;
+using Infrastructure.Photos;
 
 namespace API {
     public class Startup {
@@ -66,6 +67,8 @@ namespace API {
 
             services.AddScoped<IJwtGenerator, JwtGenerator> ();
             services.AddScoped<IUserAccessor, UserAccessor> ();
+            services.Configure<CloudinarySettings>
+            (Configuration.GetSection("Cloudinary"));
 
             var key = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (Configuration["TokenKey"]));
             services.AddAuthentication (JwtBearerDefaults.AuthenticationScheme).AddJwtBearer (
