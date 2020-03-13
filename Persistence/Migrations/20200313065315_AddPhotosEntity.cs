@@ -2,7 +2,7 @@
 
 namespace Persistence.Migrations
 {
-    public partial class PhotoEntityAdded : Migration
+    public partial class AddPhotosEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,7 @@ namespace Persistence.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "Photo",
+                name: "Photos",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -22,9 +22,9 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Photo", x => x.Id);
+                    table.PrimaryKey("PK_Photos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Photo_AspNetUsers_AppUserId",
+                        name: "FK_Photos_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -32,15 +32,15 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Photo_AppUserId",
-                table: "Photo",
+                name: "IX_Photos_AppUserId",
+                table: "Photos",
                 column: "AppUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Photo");
+                name: "Photos");
 
             migrationBuilder.DropColumn(
                 name: "Bio",
