@@ -19,8 +19,8 @@ const ActivityDetailedSidebar: React.FC<IProps> = ({ attendees }) => {
                 inverted
                 color="teal"
             >
-                {attendees.length}
-                {attendees.length === 1 ? "Person" : "People"}
+                {attendees.length}{' '} 
+                {attendees.length === 1 ? "Person " : "People "}
                 going
             </Segment>
             <Segment attached>
@@ -46,7 +46,7 @@ const ActivityDetailedSidebar: React.FC<IProps> = ({ attendees }) => {
                             />
                             <Item.Content verticalAlign="middle">
                                 <Item.Header as="h3">
-                                    <Link to={`profile/${attendee.username}`}>
+                                    <Link to={`/profile/${attendee.username}`}>
                                         {attendee.displayName}
                                     </Link>
                                 </Item.Header>
