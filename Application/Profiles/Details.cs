@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Profiles
@@ -26,7 +27,7 @@ namespace Application.Profiles
 
             public async Task<Profile> Handle(Query request, CancellationToken cancellationToken)
             {
-                var user = _context.Users.SingleOrDefault(x => x.UserName == request.Username);
+                var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == request.Username);
 
                 return new Profile
                 {
