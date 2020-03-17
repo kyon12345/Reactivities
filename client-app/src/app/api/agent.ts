@@ -3,14 +3,14 @@ import { IActivity } from "../models/activity";
 import { history } from "../..";
 import { toast } from "react-toastify";
 import { IUser, IUserFormValues } from "../models/user";
-import { IProfile } from "../models/profile";
+import { IProfile, IPhoto } from "../models/profile";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
 axios.interceptors.request.use(
     config => {
         const token = window.localStorage.getItem("jwt");
-        if (token) config.headers.Authorization = `Bearer ${token}`;    
+        if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     },
     error => {
@@ -66,7 +66,16 @@ const requests = {
         axios
             .delete(url)
             .then(sleep(1000))
-            .then(responseBody)
+            .then(responseBody),
+    postForm: (url: string, file: Blob) => {
+        let formData = new FormData();
+        formData.append("File", file);
+        return axios
+            .post(url, formData, {
+                headers: { "Content-type": "multipart/form-data" }
+            })
+            .then(responseBody);
+    }
 };
 
 const Activities = {
@@ -77,7 +86,7 @@ const Activities = {
         requests.put(`/activities/${activity.id}`, activity),
     delete: (id: string) => requests.del(`activities/${id}`),
     attend: (id: string) => requests.post(`/activities/${id}/attend`, {}),
-    unattend:(id:string)=>requests.del(`/activities/${id}/unattend`)
+    unattend: (id: string) => requests.del(`/activities/${id}/unattend`)
 };
 
 const User = {
@@ -89,8 +98,13 @@ const User = {
 };
 
 const Profiles = {
-    get: (username: string): Promise<IProfile> => requests.get(`/profiles/${username}`)
-}
+    get: (username: string): Promise<IProfile> =>
+        requests.get(`/profiles/${username}`),
+    uploadPhoto: (photo: Blob): Promise<IPhoto> =>
+        requests.postForm(`/photos`, photo),
+    setMainPhoto: (id: string) => requests.post(`/photos/${id}/setMain`, {}),
+    deletePhoto: (id: string) => requests.del(`/photos/${id}`)
+};
 
 export default {
     Activities,
