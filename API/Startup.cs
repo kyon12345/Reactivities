@@ -20,6 +20,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Proxies;
 using Persistence;
 using Infrastructure.Photos;
+using System.Threading.Tasks;
+using API.SignalR;
 
 namespace API {
     public class Startup {
@@ -65,6 +67,8 @@ namespace API {
             });
             services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
 
+            services.AddSignalR();
+
             services.AddScoped<IJwtGenerator, JwtGenerator> ();
             services.AddScoped<IUserAccessor, UserAccessor> ();
             services.AddScoped<IPhotoAccessor, PhototAccessor>();
@@ -79,6 +83,18 @@ namespace API {
                     IssuerSigningKey = key,
                     ValidateAudience = false,
                     ValidateIssuer = false
+                    };
+                    opt.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken =
+                            context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                                context.Token = accessToken;
+                            return Task.CompletedTask;
+                        }
                     };
                 }
             );
@@ -104,6 +120,7 @@ namespace API {
             app.UseAuthorization ();
             app.UseEndpoints (endpoints => {
                 endpoints.MapControllers ();
+                endpoints.MapHub<ChatHub>("/chat");
             });
 
         }
