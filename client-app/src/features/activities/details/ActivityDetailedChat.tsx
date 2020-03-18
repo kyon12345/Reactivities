@@ -1,7 +1,24 @@
 import React, { Fragment } from 'react'
 import { Segment, Header, Form, Button,Comment } from 'semantic-ui-react'
+import { useContext } from 'react'
+import { RootStoreContext } from '../../../app/stores/rootStore';
+import { useEffect } from 'react';
 
 const ActivityDetailedChat = () => {
+    const rootStore = useContext(RootStoreContext);
+    const { 
+        createHubConnection,
+        stopHubConnection,
+        addComment,
+        activity
+    } = rootStore.activityStore;
+    
+    useEffect(() => {
+        createHubConnection(activity!.id);
+        return () => {
+            stopHubConnection();
+        }
+    },[createHubConnection,stopHubConnection])
     return (
           <Fragment>
             <Segment
