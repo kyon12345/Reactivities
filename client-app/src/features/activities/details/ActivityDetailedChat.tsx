@@ -54,7 +54,7 @@ const ActivityDetailedChat = () => {
                                     <Comment.Metadata>
                                         <div>
                                             {formatDistance(
-                                                comment.createAt,
+                                                comment.createdAt,
                                                 new Date()
                                             )}
                                         </div>
@@ -63,31 +63,32 @@ const ActivityDetailedChat = () => {
                                 </Comment.Content>
                             </Comment>
                         ))}
+
+                    <FinalForm
+                        onSubmit={addComment}
+                        render={({ handleSubmit, submitting, form }) => (
+                            <Form
+                                onSubmit={() =>
+                                    handleSubmit()!.then(() => form.reset())
+                                }
+                            >
+                                <Field
+                                    name="body"
+                                    component={TextAreaInput}
+                                    rows={2}
+                                    placeholder="Add your comment"
+                                />
+                                <Button
+                                    loading={submitting}
+                                    content="Add Reply"
+                                    labelPosition="left"
+                                    icon="edit"
+                                    primary
+                                />
+                            </Form>
+                        )}
+                    />
                 </Comment.Group>
-                <FinalForm
-                    onSubmit={addComment}
-                    render={({ handleSubmit, submitting, form }) => (
-                        <Form
-                            onSubmit={() =>
-                                handleSubmit()!.then(() => form.reset())
-                            }
-                        >
-                            <Field
-                                component={TextAreaInput}
-                                name="body"
-                                rows={2}
-                                placeholder="Add your comment"
-                            />
-                            <Button
-                                loading={submitting}
-                                content="Add Reply"
-                                labelPosition="left"
-                                icon="edit"
-                                primary
-                            />
-                        </Form>
-                    )}
-                />
             </Segment>
         </Fragment>
     );
