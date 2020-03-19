@@ -3,7 +3,7 @@ import { Segment, Header, Form, Button, Comment } from "semantic-ui-react";
 import { useContext } from "react";
 import { RootStoreContext } from "../../../app/stores/rootStore";
 import { useEffect } from "react";
-import { formatDistance } from "date-fns/esm";
+import { formatDistance } from "date-fns";
 import { Form as FinalForm, Field } from "react-final-form";
 import TextAreaInput from "../../../app/common/form/TextAreaInput";
 import { observer } from "mobx-react-lite";
@@ -23,7 +23,7 @@ const ActivityDetailedChat = () => {
         return () => {
             stopHubConnection();
         };
-    }, [createHubConnection, stopHubConnection]);
+    }, [createHubConnection, stopHubConnection,activity]);
     return (
         <Fragment>
             <Segment
@@ -60,9 +60,6 @@ const ActivityDetailedChat = () => {
                                         </div>
                                     </Comment.Metadata>
                                     <Comment.Text>{comment.body}</Comment.Text>
-                                    <Comment.Actions>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
                                 </Comment.Content>
                             </Comment>
                         ))}
