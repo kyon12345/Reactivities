@@ -1,5 +1,5 @@
 import RootStore from "./rootStore";
-import { observable, action, runInAction, computed } from "mobx";
+import { observable, action, runInAction, computed, reaction } from "mobx";
 import { IProfile, IPhoto } from "../models/profile";
 import agent from "../api/agent";
 import { toast } from "react-toastify";
@@ -8,12 +8,27 @@ export default class ProfileStroe {
     rootStore: RootStore;
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
+
+        reaction(
+            () => this.activeTab,
+            newIndex => {
+                if (newIndex === 3 || newIndex === 4) {
+                    const predicate =
+                        newIndex === 3 ? "followers" : "following";
+                    this.loadingFollowings(predicate);
+                } else {
+                    this.followings = [];
+                }
+            }
+        );
     }
 
     @observable profile: IProfile | null = null;
     @observable loadingProfile: boolean = true;
     @observable uploadingPhoto: boolean = false;
     @observable loading: boolean = false;
+    @observable followings: IProfile[] = [];
+    @observable activeTab: number = 0;
 
     @computed get isCurrentUser() {
         if (this.rootStore.userStore.user && this.profile) {
@@ -151,5 +166,28 @@ export default class ProfileStroe {
                 this.loading = false;
             });
         }
+    };
+
+    @action loadingFollowings = async (predicate: string) => {
+        this.loading = true;
+        try {
+            const followings = await agent.Profiles.listFollowing(
+                this.profile!.username,
+                predicate
+            );
+            runInAction(() => {
+                this.followings = followings;
+                this.loading = false;
+            });
+        } catch (error) {
+            toast.error("error loading followings");
+            runInAction(() => {
+                this.loading = false;
+            });
+        }
+    };
+
+    @action setActiveTab = (activeIndexNumber: number) => {
+        this.activeTab = activeIndexNumber;
     };
 }
