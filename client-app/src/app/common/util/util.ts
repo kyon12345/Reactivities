@@ -1,7 +1,7 @@
 import { IUser } from "../../models/user";
 import { IAttendee, IActivity } from "../../models/activity";
 
-export const setActivityPorps = (activity: IActivity, user: IUser) => {
+export const setActivityProps = (activity: IActivity, user: IUser) => {
     activity.date = new Date(activity.date);
     activity.isGoing = activity.attendees.some(
         a => a.username === user.username
