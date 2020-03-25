@@ -21,7 +21,7 @@ const ActivityListItem: React.FC<{ activity: IActivity }> = ({ activity }) => {
                     <Item>
                         <Item.Image
                             src={host.image || "/assets/user.png"}
-                            size="tiny"
+                            size='tiny'
                             circular
                             style={{ marginBottom: 3 }}
                         />

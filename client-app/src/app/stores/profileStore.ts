@@ -129,6 +129,7 @@ export default class ProfileStroe {
                 }
                 this.profile = { ...this.profile!, ...profile };
             });
+            
         } catch (error) {
             toast.error("Problem Updating Profile");
         }
