@@ -1,4 +1,4 @@
-export interface IProfile{
+export interface IProfile {
     displayName: string;
     username: string;
     bio: string;
@@ -8,8 +8,15 @@ export interface IProfile{
     followersCount: number;
     followingCount: number;
 }
-export interface IPhoto{
+export interface IPhoto {
     id: string;
     url: string;
     isMain: boolean;
+}
+
+export interface IUserActivity {
+    id: string;
+    title: string;
+    category: string;
+    date: Date;
 }

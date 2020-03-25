@@ -3,7 +3,7 @@ import { IActivity, IActivitiesEnvelope } from "../models/activity";
 import { history } from "../..";
 import { toast } from "react-toastify";
 import { IUser, IUserFormValues } from "../models/user";
-import { IProfile, IPhoto } from "../models/profile";
+import { IProfile, IPhoto, IUserActivity } from "../models/profile";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -115,7 +115,9 @@ const Profiles = {
     unfollow: (username: string) =>
         requests.del(`/profiles/${username}/follow`),
     listFollowing: (username: string, predicate: string) =>
-        requests.get(`/profiles/${username}/follow?predicate=${predicate}`)
+        requests.get(`/profiles/${username}/follow?predicate=${predicate}`),
+    listActivities: (username: string, predicate: string) =>
+        requests.get(`/profiles/${username}/activities?predicate=${predicate}`)
 };
 
 export default {
