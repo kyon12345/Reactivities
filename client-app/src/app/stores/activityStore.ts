@@ -4,7 +4,6 @@ import {
     computed,
     configure,
     runInAction,
-    keys,
     reaction
 } from "mobx";
 import { SyntheticEvent } from "react";
@@ -29,11 +28,14 @@ export default class ActivityStore {
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
 
-        reaction(() => this.predicate.keys(), () => {
-            this.page = 0;
-            this.activityRegistry.clear();
-            this.loadActivities();
-        })
+        reaction(
+            () => this.predicate.keys(),
+            () => {
+                this.page = 0;
+                this.activityRegistry.clear();
+                this.loadActivities();
+            }
+        );
     }
 
     @observable activityRegistry = new Map();
@@ -149,34 +151,37 @@ export default class ActivityStore {
     };
 
     @action createHubConnection = async (activityId: string) => {
-        this.hubConnection = new HubConnectionBuilder()
-            .withUrl("http://localhost:5000/chat", {
-                accessTokenFactory: () => this.rootStore.commonStore.token!
-            })
-            .configureLogging(LogLevel.Information)
-            .build();
+        if (!this.hubConnection) {
+            this.hubConnection = new HubConnectionBuilder()
+                .withUrl(process.env.REACT_APP_API_CHAT_URL!, {
+                    accessTokenFactory: () => this.rootStore.commonStore.token!
+                })
+                .configureLogging(LogLevel.Information)
+                .build();
 
-        await this.hubConnection
-            .start()
-            .then(() => console.log(this.hubConnection!.state))
-            .then(() => {
-                console.log("Attempting to join group");
-                if (this.hubConnection!.state === "Connected")
-                    this.hubConnection!.invoke("AddToGroup", activityId);
-            })
-            .catch(error =>
-                console.log("Error establishing connection", error)
-            );
-
-        this.hubConnection.on("ReceiveComment", comment => {
-            runInAction(() => {
-                this.activity!.comments.push(comment);
+            this.hubConnection.on("ReceiveComment", comment => {
+                runInAction(() => {
+                    this.activity!.comments.push(comment);
+                });
             });
-        });
 
-        this.hubConnection.on("Send", message => {
-            toast.info(message);
-        });
+            this.hubConnection.on("Send", message => {
+                toast.info(message);
+            });
+        }
+        if (this.hubConnection!.state === 'Disconnected') {
+            await this.hubConnection
+                .start()
+                .then(() => console.log(this.hubConnection!.state))
+                .then(() => {
+                    console.log("Attempting to join group");
+                    if (this.hubConnection!.state === "Connected")
+                        this.hubConnection!.invoke("AddToGroup", activityId);
+                })
+                .catch(error =>
+                    console.log("Error establishing connection", error)
+                );
+        }
     };
 
     @action stopHubConnection = () => {
